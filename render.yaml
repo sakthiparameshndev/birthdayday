@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: ak-bridal-works-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://sakthiparamesh:sakthi123@cluster0.ro1wtbz.mongodb.net/ak-bridal-works?retryWrites=true&w=majority&appName=Cluster0
+    rootDir: BACKEND
+
+  - type: web
+    name: ak-bridal-works-frontend
+    env: static
+    plan: free
+    buildCommand: echo "Building frontend"
+    startCommand: echo "Frontend built"
+    rootDir: FRONTEND
+    domains:
+      - ak-bridal-works-frontend.onrender.com

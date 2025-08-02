@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery | AK Bridal Works</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Playfair+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header style="display: flex; align-items: center; background-color: #1c1425; padding: 5px 20px; height: 100px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 6px 25px rgba(255, 73, 160, 0.3);">
+    <img src="images/logo.png" alt="AK Bridal Works Logo" style="width: 200px; height: auto; max-height: 180px; margin-left: 200px;" />
+    <nav style="flex: 1; display: flex; justify-content: center; gap: 100px; margin-left: 50px;">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="gallery.html" class="active">Gallery</a>
+      <a href="reviews.html">Reviews</a>
+      <a href="contact.html">Contact</a>
+      <a href="admin-login.html">Admin</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="gallery-hero">
+    <h1>Bridal Reels Gallery</h1>
+    <p>Watch some of our best bridal transformations in action!</p>
+  </section>
+
+  <!-- Video Gallery Grid -->
+  <section class="video-gallery" id="videoGallery">
+    <!-- Videos will be loaded here by JavaScript -->
+  </section>
+  
+  <script>
+    // Load videos when the page loads
+    window.addEventListener('DOMContentLoaded', function() {
+      loadVideos();
+    });
+    
+    // Function to load videos from backend
+    function loadVideos() {
+      const videoGallery = document.getElementById('videoGallery');
+      
+      // Fetch videos from backend
+      fetch('/api/gallery/videos')
+        .then(response => response.json())
+        .then(videos => {
+          if (videos.length === 0) {
+            videoGallery.innerHTML = '<p>No videos found.</p>';
+            return;
+          }
+          
+          // Clear the gallery
+          videoGallery.innerHTML = '';
+          
+          // Add each video to the gallery
+          videos.forEach(function(video) {
+            const videoElement = document.createElement('div');
+            videoElement.className = 'video-item';
+            videoElement.innerHTML = `
+              <video src="${video.url}" autoplay muted loop playsinline></video>
+            `;
+            videoGallery.appendChild(videoElement);
+          });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          videoGallery.innerHTML = '<p>Error loading videos.</p>';
+        });
+    }
+  </script>
+
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2>Loved Our Reels?</h2>
+    <a href="index.html#contact" class="btn">Book Your Glam Session</a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 AK Bridal Works. All rights reserved.
+  </footer>
+</body>
+</html>
