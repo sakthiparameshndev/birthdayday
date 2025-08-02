@@ -10,24 +10,29 @@ const Consultation = require('./models/Consultation');
 const Admin = require('./models/Admin');
 
 const app = express();
-const PORT = 5500;
+const PORT = process.env.PORT || 5500;
 
 // Middleware
 app.use(cors({
-  origin: 'https://ak-bridal-works-frontend.onrender.com'
+  origin: 'https://ak-bridal-works-frontend.onrender.com'  // frontend domain
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Serve static frontend files
 app.use(express.static(path.join(__dirname, '../FRONTEND')));
 
-// Connect to MongoDB
+// MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://sakthiparamesh:sakthi123@cluster0.ro1wtbz.mongodb.net/ak-bridal-works?retryWrites=true&w=majority&appName=Cluster0';
+
 mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 })
 .then(async () => {
   console.log('Connected to MongoDB Atlas');
-  
-  // Insert admin user if not exists
+
+  // Create default admin user if not exists
   const adminExists = await Admin.findOne({ username: 'aarthi' });
   if (!adminExists) {
     const admin = new Admin({
@@ -40,9 +45,9 @@ mongoose.connect(MONGODB_URI, {
 })
 .catch(err => console.error('MongoDB connection error:', err));
 
-// API Routes
+// ========== ROUTES ==========
 
-// POST /api/reviews - Save reviews from write_review.html
+// Save review (from write_review.html)
 app.post('/api/reviews', async (req, res) => {
   try {
     const { name, rating, review } = req.body;
@@ -54,7 +59,7 @@ app.post('/api/reviews', async (req, res) => {
   }
 });
 
-// GET /api/reviews - Fetch reviews to show in Reviews.html
+// Get all reviews (for Reviews.html)
 app.get('/api/reviews', async (req, res) => {
   try {
     const reviews = await Review.find().sort({ date: -1 });
@@ -64,7 +69,7 @@ app.get('/api/reviews', async (req, res) => {
   }
 });
 
-// POST /api/consultation - Save contact form submissions from contact.html
+// Save consultation form (from contact.html)
 app.post('/api/consultation', async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
@@ -76,12 +81,12 @@ app.post('/api/consultation', async (req, res) => {
   }
 });
 
-// POST /api/admin/login - Handle admin login
+// Admin login
 app.post('/api/admin/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     const admin = await Admin.findOne({ username });
-    
+
     if (admin && admin.password === password) {
       res.json({ authenticated: true });
     } else {
@@ -92,7 +97,7 @@ app.post('/api/admin/login', async (req, res) => {
   }
 });
 
-// Serve the main index.html for all other routes (for SPA)
+// Fallback route to frontend
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../FRONTEND', 'index.html'));
 });
