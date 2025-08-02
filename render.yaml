@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ak-bridal-works-backend
+    name: ak-bridal
     env: node
     rootDir: BACKEND
     buildCommand: npm install
