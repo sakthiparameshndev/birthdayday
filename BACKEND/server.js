@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5500;
 
 // Middleware
 app.use(cors({
-  origin: ['https://ak-bridal-works-frontend.onrender.com'] // Only frontend domain
+  origin: ['https://ak-bridal-works-frontend.onrender.com'] // Allow only your frontend
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,7 +24,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
   .then(async () => {
     console.log('✅ Connected to MongoDB Atlas');
 
-    // Create default admin if not exists
+    // Ensure default admin exists
     const adminExists = await Admin.findOne({ username: 'aarthi' });
     if (!adminExists) {
       const admin = new Admin({ username: 'aarthi', password: 'aarthi2004' });
@@ -84,6 +84,11 @@ app.post('/api/admin/login', async (req, res) => {
   } catch {
     res.status(500).json({ authenticated: false, message: "Server error" });
   }
+});
+
+// Health check route
+app.get('/', (req, res) => {
+  res.send('✅ AK Bridal Works Backend is Running');
 });
 
 // Start server
