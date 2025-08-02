@@ -14,21 +14,19 @@ const PORT = process.env.PORT || 5500;
 
 // Middleware
 app.use(cors({
-  origin: 'https://ak-bridal-works-frontend.onrender.com'  // frontend domain
+  origin: 'https://ak-bridal-works-frontend.onrender.com'
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static frontend files
-app.use(express.static(path.join(__dirname, '../FRONTEND')));
+const frontendPath = path.join(__dirname, 'FRONTEND');
+app.use(express.static(frontendPath));
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://sakthiparamesh:sakthi123@cluster0.ro1wtbz.mongodb.net/ak-bridal-works?retryWrites=true&w=majority&appName=Cluster0';
 
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(MONGODB_URI)
 .then(async () => {
   console.log('Connected to MongoDB Atlas');
 
@@ -47,7 +45,7 @@ mongoose.connect(MONGODB_URI, {
 
 // ========== ROUTES ==========
 
-// Save review (from write_review.html)
+// Save review
 app.post('/api/reviews', async (req, res) => {
   try {
     const { name, rating, review } = req.body;
@@ -59,7 +57,7 @@ app.post('/api/reviews', async (req, res) => {
   }
 });
 
-// Get all reviews (for Reviews.html)
+// Get all reviews
 app.get('/api/reviews', async (req, res) => {
   try {
     const reviews = await Review.find().sort({ date: -1 });
@@ -69,7 +67,7 @@ app.get('/api/reviews', async (req, res) => {
   }
 });
 
-// Save consultation form (from contact.html)
+// Save consultation form
 app.post('/api/consultation', async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
@@ -97,9 +95,9 @@ app.post('/api/admin/login', async (req, res) => {
   }
 });
 
-// Fallback route to frontend
+// Fallback route (for all unknown routes)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../FRONTEND', 'index.html'));
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // Start server
