@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const path = require('path');
 
 // Models
 const Review = require('./models/Review');
@@ -14,18 +13,13 @@ const PORT = process.env.PORT || 5500;
 
 // Middleware
 app.use(cors({
-  origin: ['https://ak-bridal-works-frontend.onrender.com', 'https://ak-bridal-works.onrender.com']
+  origin: ['https://ak-bridal-works-frontend.onrender.com'] // Only frontend domain
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static frontend files
-const frontendPath = path.join(__dirname, 'FRONTEND');
-app.use(express.static(frontendPath));
-
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://sakthiparamesh:sakthi123@cluster0.ro1wtbz.mongodb.net/ak-bridal-works?retryWrites=true&w=majority&appName=Cluster0';
-
+const MONGODB_URI = process.env.MONGODB_URI;
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {
     console.log('✅ Connected to MongoDB Atlas');
@@ -90,11 +84,6 @@ app.post('/api/admin/login', async (req, res) => {
   } catch {
     res.status(500).json({ authenticated: false, message: "Server error" });
   }
-});
-
-// Catch-all to serve React app for any other route
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // Start server
