@@ -1,7 +1,7 @@
 services:
   - type: web
     name: ak-bridal
-    env: node
+    env: static
     rootDir: BACKEND
     buildCommand: npm install
     startCommand: node server.js
@@ -16,4 +16,4 @@ services:
     env: static
     rootDir: frontend
     buildCommand: echo "No build needed"
-    staticPublishPath: .
+    staticPublishPath: dist
