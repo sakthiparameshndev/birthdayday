@@ -14,6 +14,6 @@ services:
   - type: web
     name: ak-bridal-works-frontend
     env: static
-    rootDir: FRONTEND
+    rootDir: frontend
     buildCommand: echo "No build needed"
     staticPublishPath: .
