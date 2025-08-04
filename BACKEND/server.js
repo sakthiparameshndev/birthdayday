@@ -1,4 +1,4 @@
-
+require('dotenv').config(); // Load env variables
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -14,13 +14,15 @@ const PORT = process.env.PORT || 5500;
 
 // Middleware
 app.use(cors({
-  origin: ['https://ak-bridal-works-frontend.onrender.com'] // Allow only your frontend
+  origin: ['https://ak-bridal-works-frontend.onrender.com']
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI;
+console.log("Connecting to MongoDB:", MONGODB_URI); // Debug log
+
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {
     console.log('✅ Connected to MongoDB Atlas');
