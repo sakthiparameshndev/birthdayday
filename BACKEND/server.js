@@ -14,20 +14,19 @@ const PORT = process.env.PORT || 5500;
 
 // Middleware
 app.use(cors({
-  origin: ['https://ak-bridal-works-frontend.onrender.com']
+  origin: ['https://ak-bridal-works-frontend.onrender.com', 'http://localhost:3000', 'http://127.0.0.1:3000']
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI;
-console.log("Connecting to MongoDB:", MONGODB_URI); // Debug log
+console.log("Connecting to MongoDB:", MONGODB_URI);
 
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGODB_URI)
   .then(async () => {
     console.log('✅ Connected to MongoDB Atlas');
 
-    // Ensure default admin exists
     const adminExists = await Admin.findOne({ username: 'aarthi' });
     if (!adminExists) {
       const admin = new Admin({ username: 'aarthi', password: 'aarthi2004' });
@@ -37,7 +36,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
   })
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// ========== ROUTES ==========
+// Routes
 
 // Save a review
 app.post('/api/reviews', async (req, res) => {
@@ -82,14 +81,14 @@ app.post('/api/admin/login', async (req, res) => {
     if (admin && admin.password === password) {
       res.json({ authenticated: true });
     } else {
-      res.json({ authenticated: false, message: "Invalid credentials" });
+      res.json({ authenticated: false, message: 'Invalid credentials' });
     }
   } catch {
-    res.status(500).json({ authenticated: false, message: "Server error" });
+    res.status(500).json({ authenticated: false, message: 'Server error' });
   }
 });
 
-// Health check route
+// Health check
 app.get('/', (req, res) => {
   res.send('✅ AK Bridal Works Backend is Running');
 });
